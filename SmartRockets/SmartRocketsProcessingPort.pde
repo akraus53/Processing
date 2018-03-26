@@ -30,24 +30,13 @@ int lap = 0;
 
 // target and barrier vars
 PVector target;
-int rw, rx, ry, rh, bw, bx, by, bh;
+ArrayList<PVector> barriers = new ArrayList<PVector>();
 
 void setup() {
-  size(1600, 900);
+  fullScreen();
+  //size(1600, 900);
   population = new Population();
   target = new PVector(width/2, 50);
-
-  // barrier 1
-  rw = floor(width*0.7);
-  rx = floor((width-1.5*rw)/2);
-  ry = floor(height*0.7);
-  rh = 30;
-
-  //barrier 2
-  bw = rw;
-  bx = floor((2*width-2*rw)/2);
-  by = floor(height * 0.35);
-  bh = 30;
 }
 
 void draw() {
@@ -73,12 +62,13 @@ void draw() {
   // draw the barriers and the target
   noStroke();
   fill(255);
-  rectMode(CORNER);
-  rect(rx, ry, rw, rh);
-  rect(bx, by, bw, bh);
+
 
   ellipse(target.x, target.y, 16, 16);
-
+  fill(0, 255, 255);
+  for (PVector p : barriers) {
+    ellipse(p.x, p.y, 20, 20);
+  }
   drawBestPath();
   showStats();
 }
@@ -105,6 +95,7 @@ void showStats() {
   fill(255);
   textSize(30);
   textAlign(TOP);
+  if(hitsThisRound < 0) hitsThisRound = 0;
   text(("Hits this round:" + hitsThisRound), 10, 30);
   text(("Highscore:" + allTimeBestHits), 10, 60);
 
@@ -123,7 +114,7 @@ void drawBestPath() {
 
   if (timeLogged || drawingLine) {
     drawingLine = true;
-    
+
     // rocket has to be reset after every drawing cycle
     bestRocket.pos = new PVector(width/2, height -30);
     bestRocket.vel.mult(0);
@@ -140,4 +131,10 @@ void drawBestPath() {
     }
     hitsThisRound--;
   }
+}
+
+void mouseDragged() {
+  barriers.add(new PVector(mouseX, mouseY));
+  allTimeBestTime = lifespan;
+  drawingLine = false;
 }

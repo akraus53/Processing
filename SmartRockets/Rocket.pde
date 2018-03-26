@@ -35,8 +35,10 @@ class Rocket {
   void calcFitness() {
     float d = dist(this.pos.x, this.pos.y, target.x, target.y);
 
-    this.fitness = map(d, 0, width, width, 0);
+// Flip following 2 lines:
     this.fitness *= this.fitness;
+
+    this.fitness = map(d, 0, width, width, 0);
 
 
     this.fitness += (height - this.pos.x)/3;
@@ -76,14 +78,11 @@ class Rocket {
       this.pos = target.copy();
     }
     // Rocket hit the barrier
-    if (this.pos.x > rx && this.pos.x < rx + rw && this.pos.y > ry && this.pos.y < ry + rh) {
+    for(PVector p : barriers){
+    if (dist(p.x, p.y, this.pos.x, this.pos.y) < 20) {
       this.crashed = true;
       this.hitbarrier = true;
     }
-
-    if (this.pos.x > bx && this.pos.x < bx + bw && this.pos.y > by && this.pos.y < by + bh) {
-      this.crashed = true;
-      this.hitbarrier = true;
     }
 
     // Rocket has hit left or right of window
